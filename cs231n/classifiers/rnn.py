@@ -151,28 +151,8 @@ class CaptioningRNN(object):
         ############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-        h0, affine_cache = affine_forward(features, W_proj, b_proj)
-        captions_in_embedded, embedding_cache = word_embedding_forward(captions_in, W_embed)
-        if self.cell_type=='rnn':
-            h, cache_rnn = rnn_forward(captions_in_embedded, h0, Wx, Wh, b)
-            y, temporal_cache = temporal_affine_forward(h, W_vocab, b_vocab)
-            loss, dloss = temporal_softmax_loss(y, captions_out, mask)
-            
-            dh, grads["W_vocab"], grads["b_vocab"] = temporal_affine_backward(dloss, temporal_cache)
-            dembed, dh0, grads["Wx"], grads["Wh"], grads["b"] = rnn_backward(dh, cache_rnn)
-            grads["W_embed"] = word_embedding_backward(dembed, embedding_cache)
-            dx, grads["W_proj"], grads["b_proj"] = affine_backward(dh0, affine_cache)
-        elif self.cell_type=='lstm':
-            h, cache_lstm = lstm_forward(captions_in_embedded, h0, Wx, Wh, b)
-            y, temporal_cache = temporal_affine_forward(h, W_vocab, b_vocab)
-            loss, dloss = temporal_softmax_loss(y, captions_out, mask)
-            
-            dh, grads["W_vocab"], grads["b_vocab"] = temporal_affine_backward(dloss, temporal_cache)
-            dembed, dh0, grads["Wx"], grads["Wh"], grads["b"] = lstm_backward(dh, cache_lstm)
-            grads["W_embed"] = word_embedding_backward(dembed, embedding_cache)
-            dx, grads["W_proj"], grads["b_proj"] = affine_backward(dh0, affine_cache)
-        else:
-          pass
+        pass
+
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         ############################################################################
         #                             END OF YOUR CODE                             #
@@ -239,24 +219,7 @@ class CaptioningRNN(object):
         ###########################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-        h=np.dot(features,W_proj)+b_proj
-        c=np.zeros_like(h)
-        V,D=W_embed.shape
-        #h=np.zeros_like(h0)
-        x=np.ones((N,D))* W_embed[self._start]
-        
-        for t in range(max_length):
-            if self.cell_type == "rnn":
-              next_h, cache = rnn_step_forward(x, h, Wx, Wh, b)
-            elif self.cell_type == "lstm":
-              next_h,c,cache=lstm_step_forward(x,h,c,Wx,Wh,b)
-            
-            out = np.dot(next_h,W_vocab) + b_vocab
-            captions[:, t] = np.argmax(out,axis=1)
-            x = W_embed[captions[:, t]]
-            h = next_h
-
-
+        pass
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
         ############################################################################
