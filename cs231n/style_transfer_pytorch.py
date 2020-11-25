@@ -26,7 +26,8 @@ def content_loss(content_weight, content_current, content_original):
     """
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    loss=torch.sum(content_weight*(content_current-content_original)**2)
+    return loss
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
@@ -46,7 +47,12 @@ def gram_matrix(features, normalize=True):
     """
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    N,C,H,W=features.size()
+    gram=torch.bmm(features.view(N, C, H * W),torch.transpose(features.view(N, C, H * W),1,2))
+    if normalize:
+        return gram/(H*W*C)
+    else:
+        return gram
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
@@ -73,7 +79,12 @@ def style_loss(feats, style_layers, style_targets, style_weights):
     # not be very much code (~5 lines). You will need to use your gram_matrix function.
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    style_loss=0
+    for i in range(len(style_layers)):
+        style_loss += style_weights[i] * ((gram_matrix(feats[style_layers[i]]) - style_targets[i])**2).sum()
+        
+    return style_loss
+
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
@@ -92,7 +103,8 @@ def tv_loss(img, tv_weight):
     # Your implementation should be vectorized and not require any loops!
     # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-    pass
+    loss=tv_weight*(torch.sum((img[:,:,1:,:]-img[:,:,:-1,:])**2)+torch.sum((img[:,:,:,1:]-img[:,:,:,:-1])**2))
+    return loss
 
     # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 def preprocess(img, size=512):
